@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--    使用Spring来创建对象，在Spring中，这些都称为Bean
+        beans = 对象的容器
+        Hello hello = new Hello();
+        bean = 对象   new Hello();
+        id = hello（变量名）
+        class = new 的对象
+        property 相当于给对象中的属性设置一个值，利用的是set方法
+        -->
+    <bean id="hello" class="com.gemini.pojo.Hello">
+<!--        ref:引用Spring容器中创建好的对象-->
+<!--        value：具体的值，基本数据类型和String类型-->
+        <property name="str" value="hello"/>
+    </bean>
+
+    <!--    有参构造创建对象方式三：通过参数名赋值-->
+    <bean id="user" class="com.gemini.pojo.User" name="user3,user4,user5">
+        <constructor-arg name="name" value="Gemini"/>
+    </bean>
+<!--    别名：可以使用别名获取到该对象-->
+    <alias name="user" alias="user2"/>
+
+</beans>
