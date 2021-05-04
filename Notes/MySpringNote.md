@@ -898,6 +898,8 @@ false
 
 ## 11、AOP
 
+### 11.1、代理模式
+
 **代理模式：SpringAOP的底层。**
 
 - 关于代理模式可参见：[Guide的代理模式详解](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basis/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3.md)
@@ -906,7 +908,193 @@ false
 
 ![image-20210504162555293](noteImages/image-20210504162555293.png)
 
+### 11.2、AOP
+
 AOP，意为：[面向切面编程](https://baike.baidu.com/item/面向切面编程/6016335)，通过[预编译](https://baike.baidu.com/item/预编译/3191547)方式和运行期间动态代理实现程序功能的统一维护的一种技术。AOP是[OOP](https://baike.baidu.com/item/OOP)的延续，是软件开发中的一个热点，也是[Spring](https://baike.baidu.com/item/Spring)框架中的一个重要内容，是[函数式编程](https://baike.baidu.com/item/函数式编程/4035031)的一种衍生范型。
 
 ![image-20210504165545585](noteImages/image-20210504165545585.png)
+
+### 11.3 Spring实现AOP
+
+【重要】需要使用AOP织入，导入一个依赖包。
+
+```xm
+<!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+    <version>1.9.6</version>
+</dependency>
+```
+
+#### 11.3.1 方式一：使用Spring的API接口
+
+Service层代码：
+
+```java
+public interface UserService {
+    void add();
+    void delete();
+    void update();
+    void query();
+}
+public class UserServiceImpl implements UserService{
+    @Override
+    public void add() {
+        System.out.println("add");
+    }
+
+    @Override
+    public void delete() {
+        System.out.println("delete");
+    }
+
+    @Override
+    public void update() {
+        System.out.println("update");
+    }
+
+    @Override
+    public void query() {
+        System.out.println("query");
+    }
+}
+```
+
+添加环绕（前后各添加）日志的代码：
+
+```java
+public class Log implements MethodBeforeAdvice {
+//    method：要执行的目标对象的方法
+//    objects：参数
+//    o：目标对象
+    @Override
+    public void before(Method method, Object[] objects, Object o) throws Throwable {
+        System.out.println(o.getClass().getName() + "'s " + method.getName() + " was executed.");
+    }
+}
+public class AfterLog implements AfterReturningAdvice {
+    @Override
+    public void afterReturning(Object o, Method method, Object[] objects, Object o1) throws Throwable {
+        System.out.println("执行了" + method.getName() + "方法，返回结果为" + o);
+    }
+}
+```
+
+xml配置文件：
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <bean id="userService" class="com.gemini.service.UserServiceImpl"/>
+    <bean id="log" class="com.gemini.log.Log"/>
+    <bean id="afterLog" class="com.gemini.log.AfterLog"/>
+<!--    配置AOP：需要导入AOP的约束-->
+    <aop:config>
+    <!--切入点:pointcut    表达式：expression  execution(修饰词 返回值 类名 方法名 参数)-->
+        <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/>
+<!--        执行环绕增加-->
+        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>
+        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>
+    </aop:config>
+
+</beans>
+```
+
+测试类：
+
+```java
+public class MyTest {
+    @Test
+    public void test(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        动态代理代理的是接口
+        UserService userService = (UserService) context.getBean("userService");
+        userService.add();
+    }
+}
+```
+
+测试结果：
+
+```bas
+com.gemini.service.UserServiceImpl's add was executed.
+add
+执行了add方法，返回结果为null
+```
+
+#### 11.3.2 方式二：自定义切面
+
+添加环绕（前后各添加）日志的代码：
+
+```java
+public class Diy {
+    public void before(){
+        System.out.println("=========方法执行前=======");
+    }
+    public void after(){
+        System.out.println("=========方法执行后=======");
+    }
+}
+```
+
+xml配置文件：
+
+```xml
+    <bean class="com.gemini.diy.Diy" id="diy"/>
+    <aop:config>
+<!--        自定义的切面，即一个类 ref：要引用的类-->
+        <aop:aspect ref="diy">
+<!--            切入点-->
+            <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/>
+<!--            通知-->
+            <aop:before method="before" pointcut-ref="pointcut"/>
+            <aop:after method="after" pointcut-ref="pointcut"/>
+        </aop:aspect>
+    </aop:config>
+```
+
+测试输出结果：
+
+```bas
+=========方法执行前=======
+add
+=========方法执行后=======
+```
+
+#### 11.3.3 切入点表达式
+
+- 切入点表达式的作用：知道对某个类的某个方法进行增强
+
+- 语法结构：
+
+  **execution([权限修饰符] [返回类型] [类全路径] [方法名称] ([参数列表]))**
+
+例如：
+
+- 对com.gemini.dao.BookDao类里面的add进行增强
+
+  execution(\* com.gemini.dao.BookDao.add(..))
+
+- 对com.gemini.dao.BookDao类里面的所有方法进行增强
+
+   execution(\* com.gemini.dao.BookDao.\*(..))
+
+- 对com.gemini.dao包内所有类的所有方法进行增强
+
+  execution(\* com.gemini.dao.\*.\*(..))**
+
+#### 11.3.4 AOP相关术语
+
+![image-20210505001049332](noteImages/image-20210505001049332.png)
+
+![image-20210505001251070](noteImages/image-20210505001251070.png)
+
+### 11.4 注解实现AOP
 

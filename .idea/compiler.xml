@@ -10,6 +10,7 @@
         <module name="MySpring_2_helloSpring" />
         <module name="MySpring_03" />
         <module name="MySpring_02" />
+        <module name="MySpring_05" />
         <module name="MySpring_04" />
       </profile>
     </annotationProcessing>
