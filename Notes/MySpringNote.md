@@ -1,6 +1,6 @@
 # Spring
 
-## Spring简介
+## 1、Spring简介
 
 Spring是一个**轻量**级的**非入侵式**的**控制反转(IoC)**和**面向切面(AOP)**的**支持事务的处理**的**容器框架**。
 
@@ -27,33 +27,33 @@ Spring是一个**轻量**级的**非入侵式**的**控制反转(IoC)**和**面�
 
 ```
 
-## Spring组成及拓展
+## 2、Spring组成及拓展
 
-### 组成
+### 2.1、组成
 
 ![image-20210503192040290](noteImages/image-20210503192040290.png)
 
-### 拓展
+### 2.2、拓展
 
-#### 现代基于Spring的Java开发
+#### 2.2.1 现代基于Spring的Java开发
 
 构建——协调——连接
 
 ![image-20210503192216396](noteImages/image-20210503192216396.png)
 
-#### Spring Boot
+#### 2.2.2 Spring Boot
 
 - 一个快速开发的脚手架。
 - 可以快速开发单个微服务。
 - 约定大于配置。
 
-#### Spring Cloud
+#### 2.2.3 Spring Cloud
 
 - 基于Spring Boot实现的。
 
-## IOC理论
+## 3、IOC理论
 
-###  IOC原型
+###  3.1、IOC原型
 
 - UserDao接口
 - UserDaoImpl实现类
@@ -97,7 +97,7 @@ public class MyTest {
 
 这是IOC的原型。
 
-### IOC本质
+### 3.2、IOC本质
 
 在IOC之前，主动权在程序员，程序控制调用什么。
 
@@ -115,9 +115,9 @@ Spring容器在初始化时先读取配置文件，根据配置文件或元数�
 
 ![image-20210503200647072](noteImages/image-20210503200647072.png)
 
-##  HelloSpring
+##  4、HelloSpring
 
-### 实体类
+### 4.1、实体类
 
 ```java
 public class Hello {
@@ -144,7 +144,7 @@ public class Hello {
 }
 ```
 
-### XML配置文件
+### 4.2、XML配置文件
 
 - 在Spring中创建对象并设置属性。
 
@@ -175,7 +175,7 @@ public class Hello {
 </beans>
 ```
 
-### 测试类
+### 4.3、测试类
 
 ```java
     @Test
@@ -187,17 +187,17 @@ public class Hello {
         hello.show();
 ```
 
-### 输出
+### 4.4、输出
 
 ```xml
 Hello hello
 ```
 
-### 总结
+### 4.5、总结
 
 要实现不同的操作，只需要在XML配置文件中进行修改，所谓的IOC即为：**对象由Spring来创建，管理和分配。**
 
-## IOC创建对象的方式
+## 5、IOC创建对象的方式
 
 1. 使用无参构造方法创建对象，默认实现。
 
@@ -236,16 +236,16 @@ Hello hello
 
    **容器中的对象默认为单例实现。**
 
-## Spring配置
+## 6、Spring配置
 
-### 别名
+### 6.1、别名
 
 ```xml
 <!--    别名：可以使用别名获取到该对象-->
     <alias name="user" alias="user2"/>
 ```
 
-### Bean的配置
+### 6.2、Bean的配置
 
 - id:bean的唯一标识符，也就是相当于对象名
 - class:bean对象所对应的全限定名
@@ -257,7 +257,7 @@ Hello hello
 </bean>
 ```
 
-### Import  
+### 6.3、Import  
 
 一般用于团队开发使用，可以将多个配置文件导入合并为一个。
 
@@ -278,3 +278,632 @@ applicationContext.xml:
 </beans>
 ```
 
+## 7、依赖注入（DI）
+
+### 7.1、构造器注入
+
+前面已经提过。
+
+### 7.2、set方式注入【重点】
+
+- 依赖注入：Set注入。
+  - 依赖：bean对象的创建依赖于容器
+  - 注入：bean对象的所有属性由容器来注入
+
+#### 7.2.1 环境搭建
+
+实体类：
+
+```java
+public class Address {
+    private String address;
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+}
+public class Student {
+    private String name;
+    private Address address;
+    private String[] books;
+    private List<String> hobbies;
+    private Map<String,String> card;
+    private Set<String> games;
+    private String wife;
+    private Properties info;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public String[] getBooks() {
+        return books;
+    }
+
+    public void setBooks(String[] books) {
+        this.books = books;
+    }
+
+    public List<String> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<String> hobbies) {
+        this.hobbies = hobbies;
+    }
+
+    public Map<String, String> getCard() {
+        return card;
+    }
+
+    public void setCard(Map<String, String> card) {
+        this.card = card;
+    }
+
+    public Set<String> getGames() {
+        return games;
+    }
+
+    public void setGames(Set<String> games) {
+        this.games = games;
+    }
+
+    public String getWife() {
+        return wife;
+    }
+
+    public void setWife(String wife) {
+        this.wife = wife;
+    }
+
+    public Properties getInfo() {
+        return info;
+    }
+
+    public void setInfo(Properties info) {
+        this.info = info;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", address=" + address +
+                ", books=" + Arrays.toString(books) +
+                ", hobbies=" + hobbies +
+                ", card=" + card +
+                ", games=" + games +
+                ", wife='" + wife + '\'' +
+                ", info=" + info +
+                '}';
+    }
+}
+```
+
+#### 7.2.2 普通值注入
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="name" value="Gemini"/>
+</bean>
+```
+
+#### 7.2.3 Bean注入(ref)
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="address" ref="address"/>
+</bean>
+<bean id="address" class="com.gemini.pojo.Address"/>
+```
+
+#### 7.2.4 数组注入
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="books">
+        <array>
+            <value>GK</value>
+            <value>AG</value>
+            <value>ES</value>
+        </array>
+    </property>
+</bean>
+```
+
+#### 7.2.5 List,Map,Set注入
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="hobbies">
+        <list>
+            <value>Steam</value>
+            <value>WeGame</value>
+            <value>UbiSoft</value>
+        </list>
+    </property>
+    <property name="card">
+            <map>
+                <entry key="1998" value="Year"/>
+                <entry key="1106" value="Day"/>
+            </map>
+        </property>
+        <property name="games">
+            <set>
+                <value>CSGO</value>
+            </set>
+        </property>
+</bean>
+```
+
+#### 7.2.6 空值和Null注入
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="wife" value=""/>
+    <property name="wife">
+            <null/>
+        </property>
+</bean>
+```
+
+#### 7.2.7 Properties注入
+
+```xml
+<bean id="student" class="com.gemini.pojo.Student">
+    <property name="info">
+        <props>
+            <prop key="driver">2020110275</prop>
+            <prop key="url">男</prop>
+            <prop key="username">root</prop>
+            <prop key="password">root</prop>
+        </props>
+    </property>
+</bean>
+```
+
+#### 7.2.8 测试类
+
+```java
+public class MyTest {
+    @Test
+    public void test(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        Student student = (Student) context.getBean("student");
+        System.out.println(student);
+    }
+}
+```
+
+#### 7.2.9 测试通过结果
+
+```xml
+Student{name='Gemini', address=com.gemini.pojo.Address@34bde49d, books=[GK, AG, ES], hobbies=[Steam, WeGame, UbiSoft], card={1998=Year, 1106=Day}, games=[CSGO], wife='null', info={password=root, driver=2020110275, url=男, username=root}}
+```
+
+### 7.3、拓展方式注入
+
+#### 7.3.1、p命令空间注入
+
+- 需要无参构造器
+- 可以直接注入属性的值：properties
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!--    p命令空间注入，可以直接注入属性的值：properties-->
+    <bean id="address" class="com.gemini.pojo.Address" p:address="Shandong"/>
+</beans>
+```
+
+```java
+@Test
+public void test1(){
+    ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+    Address address = context.getBean("address", Address.class);
+    System.out.println(address);
+}
+```
+
+输出为：
+
+```ba
+Address{address='Shandong'}
+```
+
+#### 7.3.2、c命令空间注入
+
+- 需要有参构造器
+- 通过构造器注入：constructor-args
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean id="address1" class="com.gemini.pojo.Address" c:address="Beijing"/>
+</beans>
+```
+
+- 注意点：需要导入xml约束才能使用p和c命名空间。
+
+```xml
+xmlns:c="http://www.springframework.org/schema/c"
+xmlns:p="http://www.springframework.org/schema/p"
+```
+
+### 7.4、Beand的作用域
+
+![image-20210504132206998](noteImages/image-20210504132206998.png)
+
+#### 7.4.1 Singleton（default）
+
+![image-20210504132406160](noteImages/singleton.png)
+
+#### 7.4.2 Prototype
+
+![](noteImages/prototype.png)
+
+其设置方式为：
+
+```xml
+<bean id="accountService" class="com.something.DefaultAccountService" scope="prototype"/>
+```
+
+#### 7.4.3 request、session、application等其他作用域
+
+- 在web开发中使用。
+
+## 8、Bean的自动装配
+
+- 自动装配：Spring在上下文中自动寻找，并自动给bean装配属性。
+- 在Spring中有三种装配的方式：
+  - 在xml中显式配置
+  - 在java配置类中显式配置
+  - **隐式的自动装配bean**
+
+### 8.1、环境搭建
+
+- **一个人有两个宠物的场景**
+
+```java
+public class Cat {
+    public void shout(){
+        System.out.println("miao~~");
+    }
+}
+public class Dog {
+    public void shout(){
+        System.out.println("wang!~");
+    }
+}
+public class Human {
+    private Dog dog;
+    private Cat cat;
+    private String name;
+
+    public Dog getDog() {
+        return dog;
+    }
+
+    public void setDog(Dog dog) {
+        this.dog = dog;
+    }
+
+    public Cat getCat() {
+        return cat;
+    }
+
+    public void setCat(Cat cat) {
+        this.cat = cat;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Human{" +
+                "dog=" + dog +
+                ", cat=" + cat +
+                ", name='" + name + '\'' +
+                '}';
+    }
+}
+```
+
+### 8.2、ByName自动装配
+
+- ByName:会自动在容器上下文中查找和自己的对象类型**属性名称对应**的bean。
+- 需要保证所有bean的id唯一，即不能出现两个bean有相同id的情况。
+
+```xml
+<bean id="dog" class="com.gemini.pojo.Dog"/>
+<bean id="cat" class="com.gemini.pojo.Cat"/>
+<bean id="human" class="com.gemini.pojo.Human" autowire="byName">
+    <property name="name" value="Gemini"/>
+</bean>
+```
+
+### 8.3、ByType自动装配
+
+- ByType:会自动在容器上下文中查找和自己的对象类型**属性类型对应**的bean。
+- 需要保证所有bean的class唯一，即不能出现两个bean有相同class的情况。
+
+```xml
+<bean id="dog" class="com.gemini.pojo.Dog"/>
+<bean id="cat" class="com.gemini.pojo.Cat"/>
+<bean id="human" class="com.gemini.pojo.Human" autowire="byType">
+    <property name="name" value="Gemini"/>
+</bean>
+```
+
+### 8.3、使用注解实现自动装配
+
+要使用注解须知：
+
+1. 导入约束(context约束)
+2. 配置注解的支持
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+</beans>
+```
+
+#### 8.3.1 @AutoWired
+
+- 直接在属性上使用即可，且添加该注解后，可以去掉该属性的setter方法。
+- 默认按照ByType进行装配。
+
+![image-20210504143455371](noteImages/image-20210504143455371.png)
+
+```java
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Autowired {
+
+	/**
+	 * Declares whether the annotated dependency is required.
+	 * <p>Defaults to {@code true}.
+	 */
+	boolean required() default true;
+
+}
+```
+
+#### 8.3.2 @Resource
+
+- 默认通过ByName实现，若找不到名字，则通过ByType实现。
+
+```java
+public class Human {
+    @Autowired
+    private Dog dog;
+    @Resource
+    private Cat cat;
+}
+```
+
+## 9、使用注解开发
+
+使用注解开发必须保证AOP的包导入。
+
+![image-20210504145610340](noteImages/image-20210504145610340.png)
+
+此外，如上所述，还需导入context约束，增加注解支持。
+
+最后，开启注解扫描，指定要扫描的包，这个包下的注解才会生效。
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+<!--    指定要扫描的包，这个包下的注解就会生效-->
+    <context:component-scan base-package="com.gemini.pojo"/>
+    <context:annotation-config/>
+
+</beans>
+```
+
+
+
+### 9.1、 bean
+
+**@Component**
+
+```java
+//@Component <=> <bean id="user" class="com.gemini.pojo.USer"/>
+@Component
+public class User {
+    public String name = "GEMINI";
+}
+```
+
+### 9.2、属性注入 
+
+**@Value**
+
+```java
+@Component
+public class User {
+    @Value("Gemini")
+    public String name;
+}
+```
+
+或者注入在setter方法上面：
+
+```java
+@Component
+public class User {
+
+    public String name;
+    @Value("Gemini")
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+### 9.3、衍生的注解
+
+在web开发中，会按照MVC三层架构分层。
+
+- dao：【**@Repository**】
+- service：【**@Service**】
+- controller：【**@Controller**】
+
+以上三个注解功能与@Component注解功能都是一样的，都是代表装配bean到Spring容器中。
+
+### 9.4、自动装配注解
+
+在8.3节中已经介绍过。
+
+### 9.5、作用域注解
+
+**@Scope**
+
+```java
+@Component
+@Scope("prototype")
+//@Scope("singleton")
+public class User {
+
+    public String name;
+    @Value("Gemini")
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+```
+
+## 10、Java配置类
+
+### 10.1 实体类
+
+```java
+@Component
+public class Dog {
+    @Value("Dog Mi")
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Dog{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+}
+```
+
+### 10.2 配置类
+
+- 方式一：@ComponentScan("com.gemini.pojo")开启包组件扫描，然后在实体类上添加@Component注解，实现bean的注入，bean的id默认为实体类名的小写dog。
+- 方式二：写一个方法，在方法上添加@Bean注解,其中方法名相当于bean的id，返回值相当于bean的class。
+- @Import 注解：导入其他配置类
+- 如果方式一和二一起使用，则会在Spring容器中生成两个对象。
+
+```java
+//代表这是一个配置类
+@Configuration
+//@ComponentScan("com.gemini.pojo")
+@Import(MyConfig2.class)
+public class MyConfig {
+//    方法名相当于bean的id，返回值相当于bean的class
+    @Bean
+    public Dog getDog(){
+        return new Dog();
+    }
+}
+```
+
+### 10.3 测试类
+
+```java
+@Test
+    public void test1(){
+        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
+        Dog dog = context.getBean("dog", Dog.class);
+        Dog getDog = context.getBean("getDog", Dog.class);
+        System.out.println(dog.hashCode());
+        System.out.println(getDog.hashCode());
+        System.out.println(dog == getDog);
+    }
+}
+```
+
+结果：
+
+```ba
+1934932165
+551016187
+false
+```
+
+### 10.4 小结
+
+- **完全不使用Spring的xml配置。**
+- 这种纯Java的配置方式，在SpringBoot中广泛使用。
+
+## 11、AOP
+
+**代理模式：SpringAOP的底层。**
+
+- 关于代理模式可参见：[Guide的代理模式详解](https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/basis/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E8%AF%A6%E8%A7%A3.md)
+- 关于面向对象七大原则可参见：[设计模式之面向对象七大基本原则](https://blog.csdn.net/yanbober/article/details/45312243)
+- 通过代理实现业务的修改：
+
+![image-20210504162555293](noteImages/image-20210504162555293.png)
+
+AOP，意为：[面向切面编程](https://baike.baidu.com/item/面向切面编程/6016335)，通过[预编译](https://baike.baidu.com/item/预编译/3191547)方式和运行期间动态代理实现程序功能的统一维护的一种技术。AOP是[OOP](https://baike.baidu.com/item/OOP)的延续，是软件开发中的一个热点，也是[Spring](https://baike.baidu.com/item/Spring)框架中的一个重要内容，是[函数式编程](https://baike.baidu.com/item/函数式编程/4035031)的一种衍生范型。
