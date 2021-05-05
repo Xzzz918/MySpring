@@ -14,6 +14,7 @@
         <module>MySpring_03</module>
         <module>MySpring_04</module>
         <module>MySpring_05</module>
+        <module>MySpring_06</module>
     </modules>
 
     <properties>

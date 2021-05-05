@@ -914,7 +914,7 @@ AOP，意为：[面向切面编程](https://baike.baidu.com/item/面向切面编
 
 ![image-20210504165545585](noteImages/image-20210504165545585.png)
 
-### 11.3 Spring实现AOP
+### 11.3 Spring 实现AOP
 
 【重要】需要使用AOP织入，导入一个依赖包。
 
@@ -1029,7 +1029,7 @@ add
 执行了add方法，返回结果为null
 ```
 
-#### 11.3.2 方式二：自定义切面
+#### 11.3.2 方式二：自定义切面【推荐】
 
 添加环绕（前后各添加）日志的代码：
 
@@ -1096,5 +1096,208 @@ add
 
 ![image-20210505001251070](noteImages/image-20210505001251070.png)
 
-### 11.4 注解实现AOP
+#### 11.3.5 方式三：注解实现AOP
+
+```java
+@Aspect //标注这个类是一个切面
+public class AnnotationPointCut {
+
+    @Before("execution(* com.gemini.service.UserServiceImpl.*(..))")
+    public void before(){
+        System.out.println("=========方法执行前=======");
+    }
+
+    @After("execution(* com.gemini.service.UserServiceImpl.*(..))")
+    public void after(){
+        System.out.println("=========方法执行后=======");
+    }
+
+//    在环绕增强中，我们可以给定一个参数，代表我们要获取处理的点：连接点
+    @Around("execution(* com.gemini.service.UserServiceImpl.*(..))")
+    public void around(ProceedingJoinPoint point) throws Throwable {
+        System.out.println("=========环绕前=======");
+//        方法执行
+        point.proceed();
+        System.out.println("=========环绕后=======");
+    }
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/aop
+                           http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <bean id="userService" class="com.gemini.service.UserServiceImpl"/>
+<!--    方式三-->
+<!--    注入bean-->
+    <bean class="com.gemini.diy.AnnotationPointCut"/>
+<!--    开启注解支持      proxy-target-class默认为false，表示默认使用JDK实现动态代理，若为true则表示使用CGLIB-->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
+
+</beans>
+```
+
+```java
+public class MyTest {
+    @Test
+    public void test(){
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        动态代理代理的是接口
+        UserService userService = (UserService) context.getBean("userService");
+        userService.add();
+    }
+}
+```
+
+```bas
+=========环绕前=======
+=========方法执行前=======
+add
+=========方法执行后=======
+=========环绕后=======
+```
+
+## 12、Spring整合Mybatis
+
+步骤：
+
+1. 导入相关jar包。
+   1. junit
+   2. mybatis
+   3. mysql数据库
+   4. spring 相关
+   5. aop织入
+   6. mybatis-spring
+2. 编写配置文件
+3. 测试
+
+### 12.1、回忆Mybatis
+
+1. 编写实体类
+2. 编写核心配置文件
+3. 编写接口
+4. 编写Mapper.xml
+5. 测试
+
+### 12.2、Mybatis-Spring
+
+#### 12.2.1 方式一
+
+1. **编写数据源DataSource配置**
+
+   ```xml
+   <!--    DataSource：使用Spring的数据源替代Mybatis的配置：我们这里使用Spring的JDBC-->
+   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+       <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+       <property name="url" value="jdbc:mysql://localhost:3306/mybatis?useSSL=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=UTC"/>
+       <property name="username" value="root"/>
+       <property name="password" value="root"/>
+   </bean>
+   ```
+
+2. **创建sqlSessionFactory**
+
+   在基础的 MyBatis 用法中，是通过 `SqlSessionFactoryBuilder` 来创建 `SqlSessionFactory` 的。而在 MyBatis-Spring 中，则使用 `SqlSessionFactoryBean` 来创建。
+
+   ```xml
+   <!--    sqlSessionFactory-->
+       <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+           <property name="dataSource" ref="dataSource" />
+   <!--        绑定Mybatis配置文件,还可以进行Mapper注册和其他配置（如别名）-->
+           <property name="configLocation" value="mybatis-config.xml"/>
+           <property name="mapperLocations" value="UserMapper.xml"/>
+           <property name="typeAliases" value="com.gemini.pojo.User"/>
+       </bean>
+   ```
+
+3. **使用sqlSessionTemplate**
+
+   `SqlSessionTemplate` 是 MyBatis-Spring 的核心。作为 `SqlSession` 的一个实现，这意味着可以使用它无缝代替你代码中已经在使用的 `SqlSession`。 `SqlSessionTemplate` 是线程安全的，可以被多个 DAO 或映射器所共享使用。
+
+   ```xml
+   <!--SqlSessionTemplate：就是我们使用的sqlSession    -->
+   <bean class="org.mybatis.spring.SqlSessionTemplate" id="sqlSessionTemplate">
+       <!--该SqlSessionTemplate类中没有set方法，因此只能使用构造器注入-->
+       <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+   </bean>
+   ```
+
+4. **需要给接口加实现类**
+
+   ```java
+   public class UserMapperImpl implements UserMapper {
+   
+       //原来我们的所有操作都使用SQLSession来执行，现在使用SqlSessionTemplate
+       private SqlSessionTemplate sqlSessionTemplate;
+       public void setSqlSessionTemplate(SqlSessionTemplate sqlSessionTemplate) {
+           this.sqlSessionTemplate = sqlSessionTemplate;
+       }
+       @Override
+       public List<User> selectUser() {
+           UserMapper mapper = sqlSessionTemplate.getMapper(UserMapper.class);
+           return mapper.selectUser();
+       }
+   }
+   ```
+
+5. **实现类注入到Spring**中，测试使用。
+
+   ```xml
+   <!--    注入实现类，注入sqlSessionTemplate属性-->
+   <bean class="com.gemini.mapper.UserMapperImpl" id="userMapper">
+       <property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+   </bean>
+   ```
+
+6. 测试
+
+   ```java
+   @Test
+   public void test1(){
+       ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+       UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
+       for (User user : userMapper.selectUser()) {
+           System.out.println(user);
+       }
+   }
+   ```
+
+   测试结果：
+
+   ```bash
+   User(id=1, name=Gemini, pwd=36252)
+   User(id=2, name=Xio, pwd=123456)
+   User(id=3, name=张笑, pwd=123456)
+   User(id=4, name=gemini, pwd=123456)
+   User(id=5, name=GodMi, pwd=793400)
+   ```
+
+   
+
+#### 12.2.2 方式二
+
+`SqlSessionDaoSupport` 是一个抽象的支持类，用来为你提供 `SqlSession`。调用 `getSqlSession()` 方法你会得到一个 `SqlSessionTemplate`，从而相比方式一省去了sqlSessionTemplate的配置部分，之后可以用于执行 SQL 方法。
+
+```java
+public class UserMapperImpl2 extends SqlSessionDaoSupport implements UserMapper{
+    @Override
+    public List<User> selectUser() {
+        return getSqlSession().getMapper(UserMapper.class).selectUser();
+    }
+}
+```
+
+```xml
+    <bean class="com.gemini.mapper.UserMapperImpl2" id="userMapper2">
+<!--        父类的属性-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+```
+
+## 13、事务
 
