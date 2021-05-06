@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="MySpring_01" />
+        <module name="MySpring_07" />
         <module name="MySpring_06" />
         <module name="MySpring_2_helloSpring" />
         <module name="MySpring_03" />

@@ -241,8 +241,7 @@ Hello hello
 ### 6.1、别名
 
 ```xml
-<!--    别名：可以使用别名获取到该对象-->
-    <alias name="user" alias="user2"/>
+<!--    别名：可以使用别名获取到该对象-->    <alias name="user" alias="user2"/>
 ```
 
 ### 6.2、Bean的配置
@@ -252,9 +251,7 @@ Hello hello
 - name:也是别名，而且name可以同时取多个别名，且可通过逗号/空格/分号等分割。
 
 ```xml
-<bean id="user" class="com.gemini.pojo.User" name="user3,user4,user5">
-    <constructor-arg name="name" value="Gemini"/>
-</bean>
+<bean id="user" class="com.gemini.pojo.User" name="user3,user4,user5">    <constructor-arg name="name" value="Gemini"/></bean>
 ```
 
 ### 6.3、Import  
@@ -266,16 +263,7 @@ Hello hello
 applicationContext.xml:
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
-    <import resource="helloBeans.xml"/>
-    <import resource="helloBeans2.xml"/>
-    <import resource="helloBeans3.xml"/>
-
-</beans>
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       xsi:schemaLocation="http://www.springframework.org/schema/beans        https://www.springframework.org/schema/beans/spring-beans.xsd">    <import resource="helloBeans.xml"/>    <import resource="helloBeans2.xml"/>    <import resource="helloBeans3.xml"/></beans>
 ```
 
 ## 7、依赖注入（DI）
@@ -399,96 +387,43 @@ public class Student {
 #### 7.2.2 普通值注入
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="name" value="Gemini"/>
-</bean>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="name" value="Gemini"/></bean>
 ```
 
 #### 7.2.3 Bean注入(ref)
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="address" ref="address"/>
-</bean>
-<bean id="address" class="com.gemini.pojo.Address"/>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="address" ref="address"/></bean><bean id="address" class="com.gemini.pojo.Address"/>
 ```
 
 #### 7.2.4 数组注入
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="books">
-        <array>
-            <value>GK</value>
-            <value>AG</value>
-            <value>ES</value>
-        </array>
-    </property>
-</bean>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="books">        <array>            <value>GK</value>            <value>AG</value>            <value>ES</value>        </array>    </property></bean>
 ```
 
 #### 7.2.5 List,Map,Set注入
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="hobbies">
-        <list>
-            <value>Steam</value>
-            <value>WeGame</value>
-            <value>UbiSoft</value>
-        </list>
-    </property>
-    <property name="card">
-            <map>
-                <entry key="1998" value="Year"/>
-                <entry key="1106" value="Day"/>
-            </map>
-        </property>
-        <property name="games">
-            <set>
-                <value>CSGO</value>
-            </set>
-        </property>
-</bean>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="hobbies">        <list>            <value>Steam</value>            <value>WeGame</value>            <value>UbiSoft</value>        </list>    </property>    <property name="card">            <map>                <entry key="1998" value="Year"/>                <entry key="1106" value="Day"/>            </map>        </property>        <property name="games">            <set>                <value>CSGO</value>            </set>        </property></bean>
 ```
 
 #### 7.2.6 空值和Null注入
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="wife" value=""/>
-    <property name="wife">
-            <null/>
-        </property>
-</bean>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="wife" value=""/>    <property name="wife">            <null/>        </property></bean>
 ```
 
 #### 7.2.7 Properties注入
 
 ```xml
-<bean id="student" class="com.gemini.pojo.Student">
-    <property name="info">
-        <props>
-            <prop key="driver">2020110275</prop>
-            <prop key="url">男</prop>
-            <prop key="username">root</prop>
-            <prop key="password">root</prop>
-        </props>
-    </property>
-</bean>
+<bean id="student" class="com.gemini.pojo.Student">    <property name="info">        <props>            <prop key="driver">2020110275</prop>            <prop key="url">男</prop>            <prop key="username">root</prop>            <prop key="password">root</prop>        </props>    </property></bean>
 ```
 
 #### 7.2.8 测试类
 
 ```java
-public class MyTest {
-    @Test
-    public void test(){
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
-        Student student = (Student) context.getBean("student");
-        System.out.println(student);
-    }
-}
+public class MyTest {    @Test    public void test(){        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");        Student student = (Student) context.getBean("student");        System.out.println(student);    }}
 ```
 
 #### 7.2.9 测试通过结果
@@ -505,15 +440,7 @@ Student{name='Gemini', address=com.gemini.pojo.Address@34bde49d, books=[GK, AG, 
 - 可以直接注入属性的值：properties
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd">
-    <!--    p命令空间注入，可以直接注入属性的值：properties-->
-    <bean id="address" class="com.gemini.pojo.Address" p:address="Shandong"/>
-</beans>
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       xmlns:p="http://www.springframework.org/schema/p"       xsi:schemaLocation="http://www.springframework.org/schema/beans        https://www.springframework.org/schema/beans/spring-beans.xsd">    <!--    p命令空间注入，可以直接注入属性的值：properties-->    <bean id="address" class="com.gemini.pojo.Address" p:address="Shandong"/></beans>
 ```
 
 ```java
@@ -589,54 +516,7 @@ xmlns:p="http://www.springframework.org/schema/p"
 - **一个人有两个宠物的场景**
 
 ```java
-public class Cat {
-    public void shout(){
-        System.out.println("miao~~");
-    }
-}
-public class Dog {
-    public void shout(){
-        System.out.println("wang!~");
-    }
-}
-public class Human {
-    private Dog dog;
-    private Cat cat;
-    private String name;
-
-    public Dog getDog() {
-        return dog;
-    }
-
-    public void setDog(Dog dog) {
-        this.dog = dog;
-    }
-
-    public Cat getCat() {
-        return cat;
-    }
-
-    public void setCat(Cat cat) {
-        this.cat = cat;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Human{" +
-                "dog=" + dog +
-                ", cat=" + cat +
-                ", name='" + name + '\'' +
-                '}';
-    }
-}
+public class Cat {    public void shout(){        System.out.println("miao~~");    }}public class Dog {    public void shout(){        System.out.println("wang!~");    }}public class Human {    private Dog dog;    private Cat cat;    private String name;    public Dog getDog() {        return dog;    }    public void setDog(Dog dog) {        this.dog = dog;    }    public Cat getCat() {        return cat;    }    public void setCat(Cat cat) {        this.cat = cat;    }    public String getName() {        return name;    }    public void setName(String name) {        this.name = name;    }    @Override    public String toString() {        return "Human{" +                "dog=" + dog +                ", cat=" + cat +                ", name='" + name + '\'' +                '}';    }}
 ```
 
 ### 8.2、ByName自动装配
@@ -645,11 +525,7 @@ public class Human {
 - 需要保证所有bean的id唯一，即不能出现两个bean有相同id的情况。
 
 ```xml
-<bean id="dog" class="com.gemini.pojo.Dog"/>
-<bean id="cat" class="com.gemini.pojo.Cat"/>
-<bean id="human" class="com.gemini.pojo.Human" autowire="byName">
-    <property name="name" value="Gemini"/>
-</bean>
+<bean id="dog" class="com.gemini.pojo.Dog"/><bean id="cat" class="com.gemini.pojo.Cat"/><bean id="human" class="com.gemini.pojo.Human" autowire="byName">    <property name="name" value="Gemini"/></bean>
 ```
 
 ### 8.3、ByType自动装配
@@ -658,11 +534,7 @@ public class Human {
 - 需要保证所有bean的class唯一，即不能出现两个bean有相同class的情况。
 
 ```xml
-<bean id="dog" class="com.gemini.pojo.Dog"/>
-<bean id="cat" class="com.gemini.pojo.Cat"/>
-<bean id="human" class="com.gemini.pojo.Human" autowire="byType">
-    <property name="name" value="Gemini"/>
-</bean>
+<bean id="dog" class="com.gemini.pojo.Dog"/><bean id="cat" class="com.gemini.pojo.Cat"/><bean id="human" class="com.gemini.pojo.Human" autowire="byType">    <property name="name" value="Gemini"/></bean>
 ```
 
 ### 8.3、使用注解实现自动装配
@@ -673,18 +545,7 @@ public class Human {
 2. 配置注解的支持
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans
-        https://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context
-        https://www.springframework.org/schema/context/spring-context.xsd">
-
-    <context:annotation-config/>
-
-</beans>
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"    xmlns:context="http://www.springframework.org/schema/context"    xsi:schemaLocation="http://www.springframework.org/schema/beans        https://www.springframework.org/schema/beans/spring-beans.xsd        http://www.springframework.org/schema/context        https://www.springframework.org/schema/context/spring-context.xsd">    <context:annotation-config/></beans>
 ```
 
 #### 8.3.1 @AutoWired
@@ -695,18 +556,7 @@ public class Human {
 ![image-20210504143455371](noteImages/image-20210504143455371.png)
 
 ```java
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface Autowired {
-
-	/**
-	 * Declares whether the annotated dependency is required.
-	 * <p>Defaults to {@code true}.
-	 */
-	boolean required() default true;
-
-}
+@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD, ElementType.ANNOTATION_TYPE})@Retention(RetentionPolicy.RUNTIME)@Documentedpublic @interface Autowired {	/**	 * Declares whether the annotated dependency is required.	 * <p>Defaults to {@code true}.	 */	boolean required() default true;}
 ```
 
 #### 8.3.2 @Resource
@@ -714,12 +564,7 @@ public @interface Autowired {
 - 默认通过ByName实现，若找不到名字，则通过ByType实现。
 
 ```java
-public class Human {
-    @Autowired
-    private Dog dog;
-    @Resource
-    private Cat cat;
-}
+public class Human {    @Autowired    private Dog dog;    @Resource    private Cat cat;}
 ```
 
 ## 9、使用注解开发
@@ -777,15 +622,7 @@ public class User {
 或者注入在setter方法上面：
 
 ```java
-@Component
-public class User {
-
-    public String name;
-    @Value("Gemini")
-    public void setName(String name) {
-        this.name = name;
-    }
-}
+@Componentpublic class User {    public String name;    @Value("Gemini")    public void setName(String name) {        this.name = name;    }}
 ```
 
 ### 9.3、衍生的注解
@@ -807,17 +644,7 @@ public class User {
 **@Scope**
 
 ```java
-@Component
-@Scope("prototype")
-//@Scope("singleton")
-public class User {
-
-    public String name;
-    @Value("Gemini")
-    public void setName(String name) {
-        this.name = name;
-    }
-}
+@Component@Scope("prototype")//@Scope("singleton")public class User {    public String name;    @Value("Gemini")    public void setName(String name) {        this.name = name;    }}
 ```
 
 ## 10、Java配置类
@@ -825,26 +652,7 @@ public class User {
 ### 10.1 实体类
 
 ```java
-@Component
-public class Dog {
-    @Value("Dog Mi")
-    private String name;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Dog{" +
-                "name='" + name + '\'' +
-                '}';
-    }
-}
+@Componentpublic class Dog {    @Value("Dog Mi")    private String name;    public String getName() {        return name;    }    public void setName(String name) {        this.name = name;    }    @Override    public String toString() {        return "Dog{" +                "name='" + name + '\'' +                '}';    }}
 ```
 
 ### 10.2 配置类
@@ -855,40 +663,19 @@ public class Dog {
 - 如果方式一和二一起使用，则会在Spring容器中生成两个对象。
 
 ```java
-//代表这是一个配置类
-@Configuration
-//@ComponentScan("com.gemini.pojo")
-@Import(MyConfig2.class)
-public class MyConfig {
-//    方法名相当于bean的id，返回值相当于bean的class
-    @Bean
-    public Dog getDog(){
-        return new Dog();
-    }
-}
+//代表这是一个配置类@Configuration//@ComponentScan("com.gemini.pojo")@Import(MyConfig2.class)public class MyConfig {//    方法名相当于bean的id，返回值相当于bean的class    @Bean    public Dog getDog(){        return new Dog();    }}
 ```
 
 ### 10.3 测试类
 
 ```java
-@Test
-    public void test1(){
-        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);
-        Dog dog = context.getBean("dog", Dog.class);
-        Dog getDog = context.getBean("getDog", Dog.class);
-        System.out.println(dog.hashCode());
-        System.out.println(getDog.hashCode());
-        System.out.println(dog == getDog);
-    }
-}
+@Test    public void test1(){        ApplicationContext context = new AnnotationConfigApplicationContext(MyConfig.class);        Dog dog = context.getBean("dog", Dog.class);        Dog getDog = context.getBean("getDog", Dog.class);        System.out.println(dog.hashCode());        System.out.println(getDog.hashCode());        System.out.println(dog == getDog);    }}
 ```
 
 结果：
 
 ```ba
-1934932165
-551016187
-false
+1934932165551016187false
 ```
 
 ### 10.4 小结
@@ -964,69 +751,25 @@ public class UserServiceImpl implements UserService{
 添加环绕（前后各添加）日志的代码：
 
 ```java
-public class Log implements MethodBeforeAdvice {
-//    method：要执行的目标对象的方法
-//    objects：参数
-//    o：目标对象
-    @Override
-    public void before(Method method, Object[] objects, Object o) throws Throwable {
-        System.out.println(o.getClass().getName() + "'s " + method.getName() + " was executed.");
-    }
-}
-public class AfterLog implements AfterReturningAdvice {
-    @Override
-    public void afterReturning(Object o, Method method, Object[] objects, Object o1) throws Throwable {
-        System.out.println("执行了" + method.getName() + "方法，返回结果为" + o);
-    }
-}
+public class Log implements MethodBeforeAdvice {//    method：要执行的目标对象的方法//    objects：参数//    o：目标对象    @Override    public void before(Method method, Object[] objects, Object o) throws Throwable {        System.out.println(o.getClass().getName() + "'s " + method.getName() + " was executed.");    }}public class AfterLog implements AfterReturningAdvice {    @Override    public void afterReturning(Object o, Method method, Object[] objects, Object o1) throws Throwable {        System.out.println("执行了" + method.getName() + "方法，返回结果为" + o);    }}
 ```
 
 xml配置文件：
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <bean id="userService" class="com.gemini.service.UserServiceImpl"/>
-    <bean id="log" class="com.gemini.log.Log"/>
-    <bean id="afterLog" class="com.gemini.log.AfterLog"/>
-<!--    配置AOP：需要导入AOP的约束-->
-    <aop:config>
-    <!--切入点:pointcut    表达式：expression  execution(修饰词 返回值 类名 方法名 参数)-->
-        <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/>
-<!--        执行环绕增加-->
-        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>
-        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>
-    </aop:config>
-
-</beans>
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       xmlns:aop="http://www.springframework.org/schema/aop"       xsi:schemaLocation="http://www.springframework.org/schema/beans                           http://www.springframework.org/schema/beans/spring-beans.xsd                           http://www.springframework.org/schema/aop                           http://www.springframework.org/schema/aop/spring-aop.xsd">    <bean id="userService" class="com.gemini.service.UserServiceImpl"/>    <bean id="log" class="com.gemini.log.Log"/>    <bean id="afterLog" class="com.gemini.log.AfterLog"/><!--    配置AOP：需要导入AOP的约束-->    <aop:config>    <!--切入点:pointcut    表达式：expression  execution(修饰词 返回值 类名 方法名 参数)-->        <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/><!--        执行环绕增加-->        <aop:advisor advice-ref="log" pointcut-ref="pointcut"/>        <aop:advisor advice-ref="afterLog" pointcut-ref="pointcut"/>    </aop:config></beans>
 ```
 
 测试类：
 
 ```java
-public class MyTest {
-    @Test
-    public void test(){
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-//        动态代理代理的是接口
-        UserService userService = (UserService) context.getBean("userService");
-        userService.add();
-    }
-}
+public class MyTest {    @Test    public void test(){        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");//        动态代理代理的是接口        UserService userService = (UserService) context.getBean("userService");        userService.add();    }}
 ```
 
 测试结果：
 
 ```bas
-com.gemini.service.UserServiceImpl's add was executed.
-add
-执行了add方法，返回结果为null
+com.gemini.service.UserServiceImpl's add was executed.add执行了add方法，返回结果为null
 ```
 
 #### 11.3.2 方式二：自定义切面【推荐】
@@ -1034,38 +777,19 @@ add
 添加环绕（前后各添加）日志的代码：
 
 ```java
-public class Diy {
-    public void before(){
-        System.out.println("=========方法执行前=======");
-    }
-    public void after(){
-        System.out.println("=========方法执行后=======");
-    }
-}
+public class Diy {    public void before(){        System.out.println("=========方法执行前=======");    }    public void after(){        System.out.println("=========方法执行后=======");    }}
 ```
 
 xml配置文件：
 
 ```xml
-    <bean class="com.gemini.diy.Diy" id="diy"/>
-    <aop:config>
-<!--        自定义的切面，即一个类 ref：要引用的类-->
-        <aop:aspect ref="diy">
-<!--            切入点-->
-            <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/>
-<!--            通知-->
-            <aop:before method="before" pointcut-ref="pointcut"/>
-            <aop:after method="after" pointcut-ref="pointcut"/>
-        </aop:aspect>
-    </aop:config>
+    <bean class="com.gemini.diy.Diy" id="diy"/>    <aop:config><!--        自定义的切面，即一个类 ref：要引用的类-->        <aop:aspect ref="diy"><!--            切入点-->            <aop:pointcut id="pointcut" expression="execution(* com.gemini.service.UserServiceImpl.*(..))"/><!--            通知-->            <aop:before method="before" pointcut-ref="pointcut"/>            <aop:after method="after" pointcut-ref="pointcut"/>        </aop:aspect>    </aop:config>
 ```
 
 测试输出结果：
 
 ```bas
-=========方法执行前=======
-add
-=========方法执行后=======
+=========方法执行前=======add=========方法执行后=======
 ```
 
 #### 11.3.3 切入点表达式
@@ -1084,7 +808,7 @@ add
 
 - 对com.gemini.dao.BookDao类里面的所有方法进行增强
 
-   execution(\* com.gemini.dao.BookDao.\*(..))
+  execution(\* com.gemini.dao.BookDao.\*(..))
 
 - 对com.gemini.dao包内所有类的所有方法进行增强
 
@@ -1124,42 +848,15 @@ public class AnnotationPointCut {
 ```
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-                           http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/aop
-                           http://www.springframework.org/schema/aop/spring-aop.xsd">
-    <bean id="userService" class="com.gemini.service.UserServiceImpl"/>
-<!--    方式三-->
-<!--    注入bean-->
-    <bean class="com.gemini.diy.AnnotationPointCut"/>
-<!--    开启注解支持      proxy-target-class默认为false，表示默认使用JDK实现动态代理，若为true则表示使用CGLIB-->
-    <aop:aspectj-autoproxy proxy-target-class="true"/>
-
-</beans>
+<?xml version="1.0" encoding="UTF-8"?><beans xmlns="http://www.springframework.org/schema/beans"       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"       xmlns:aop="http://www.springframework.org/schema/aop"       xsi:schemaLocation="http://www.springframework.org/schema/beans                           http://www.springframework.org/schema/beans/spring-beans.xsd                           http://www.springframework.org/schema/aop                           http://www.springframework.org/schema/aop/spring-aop.xsd">    <bean id="userService" class="com.gemini.service.UserServiceImpl"/><!--    方式三--><!--    注入bean-->    <bean class="com.gemini.diy.AnnotationPointCut"/><!--    开启注解支持      proxy-target-class默认为false，表示默认使用JDK实现动态代理，若为true则表示使用CGLIB-->    <aop:aspectj-autoproxy proxy-target-class="true"/></beans>
 ```
 
 ```java
-public class MyTest {
-    @Test
-    public void test(){
-        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-//        动态代理代理的是接口
-        UserService userService = (UserService) context.getBean("userService");
-        userService.add();
-    }
-}
+public class MyTest {    @Test    public void test(){        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");//        动态代理代理的是接口        UserService userService = (UserService) context.getBean("userService");        userService.add();    }}
 ```
 
 ```bas
-=========环绕前=======
-=========方法执行前=======
-add
-=========方法执行后=======
-=========环绕后=======
+=========环绕前================方法执行前=======add=========方法执行后================环绕后=======
 ```
 
 ## 12、Spring整合Mybatis
@@ -1299,5 +996,85 @@ public class UserMapperImpl2 extends SqlSessionDaoSupport implements UserMapper{
     </bean>
 ```
 
-## 13、事务
+## 13、声明式事务
 
+### 13.1、回顾事务
+
+#### 13.1.1 事务的ACID原则
+
+- 原子性：要么都成功，若有一个失败则所有操作均失败
+- 一致性：总数不变
+- 隔离性：多事务操作互不影响
+- 持久性：表中数据真正发生了变化
+
+#### 13.1.2 七种传播行为
+
+　**PROPAGATION_REQUIRED** -- 支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
+　**PROPAGATION_SUPPORTS** -- 支持当前事务，如果当前没有事务，就以非事务方式执行。
+　**PROPAGATION_MANDATORY** -- 支持当前事务，如果当前没有事务，就抛出异常。
+　**PROPAGATION_REQUIRES_NEW** -- 新建事务，如果当前存在事务，把当前事务挂起。
+　**PROPAGATION_NOT_SUPPORTED** -- 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+　**PROPAGATION_NEVER** -- 以非事务方式执行，如果当前存在事务，则抛出异常。
+　**PROPAGATION_NESTED**--如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与REQUIRED类似的操作。
+
+#### 13.1.3 五种隔离级别
+
+**隔离级别是指若干个并发的事务之间的隔离程度。**
+
+**ISOLATION_DEFAULT**--这是一个PlatfromTransactionManager默认的隔离级别，使用数据库默认的事务隔离级别.另外四个与JDBC的隔离级别相对应；
+**ISOLATION_READ_UNCOMMITTED**--这是事务最低的隔离级别，它充许别外一个事务可以看到这个事务未提交的数据。这种隔离级别会产生脏读，不可重复读和幻像读。
+
+**ISOLATION_READ_COMMITTED**--保证一个事务修改的数据提交后才能被另外一个事务读取。另外一个事务不能读取该事务未提交的数据。这种事务隔离级别可以避免脏读出现，但是可能会出现不可重复读和幻像读。
+
+**ISOLATION_REPEATABLE_READ**--这种事务隔离级别可以防止脏读，不可重复读。但是可能出现幻像读。它除了保证一个事务不能读取另一个事务未提交的数据外，还保证了避免下面的情况产生(不可重复读)。
+
+**ISOLATION_SERIALIZABLE**--这是花费最高代价但是最可靠的事务隔离级别。事务被处理为顺序执行。除了防止脏读，不可重复读外，还避免了幻像读。
+
+#### 13.1.4 三读
+
+**1)幻读**：事务1读取记录时事务2增加了记录并提交，事务1再次读取时可以看到事务2**新增**的记录；
+**2)不可重复读取**：事务1读取记录时，事务2更新了记录并提交，事务1再次读取时可以看到事务2**修改**后的记录；
+**3)脏读**：事务1更新了记录，但没有提交，事务2读取了更新后的行，然后事务T1回滚，现在T2读取无效。
+
+### 13.2、Spring中的事务管理
+
+- 编程式事务：在代码中手工管理事务，一般不用。
+- 声明式事务
+
+1. 开启事务管理功能
+
+   ```xml
+   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+     <constructor-arg ref="dataSource" />
+   </bean>
+   ```
+
+2. 结合AOP实现事务的织入
+
+   1. 配置事务的通知
+
+      ```xml
+      <!--配置事务的通知-->
+      <tx:advice id="transactionInterceptor" transaction-manager="transactionManager">
+          <!--指定配置事务的方法method，且配置事务的传播特性-->
+          <tx:attributes>
+              <tx:method name="add" propagation="REQUIRED"/>
+              <tx:method name="delete" propagation="REQUIRED"/>
+              <tx:method name="update" propagation="REQUIRED"/>
+              <tx:method name="query" read-only="true"/>
+              <tx:method name="*" propagation="REQUIRED"/>
+          </tx:attributes>
+      </tx:advice>
+      ```
+
+   2. 配置事务的切入
+
+      ```xml
+      <!--配置事务的切入-->
+      <aop:config>
+          <aop:pointcut id="txPointCut" expression="execution(* com.gemini.mapper.*.*(..))"/>
+          <aop:advisor advice-ref="transactionInterceptor" pointcut-ref="txPointCut"/>
+      </aop:config>
+      ```
+
+      
